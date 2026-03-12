@@ -148,7 +148,7 @@ async def get_top_gainers():
         now = datetime.now()
         if (
             top_gainers_cache["last_updated"]
-            and (now - top_gainers_cache["last_updated"]).seconds < 300
+            and (now - top_gainers_cache["last_updated"]).total_seconds() < 300
             and top_gainers_cache["data"]
         ):
             return {
@@ -227,7 +227,7 @@ async def get_portfolio_summary():
     conn.close()
 
     if not rows:
-        return {"portfolio": [], "total_invested": 0, "total_current_value": 0, "total_gain_loss": 0}
+        return {"portfolio": [], "total_invested": 0, "total_current_value": 0, "total_gain_loss": 0, "total_gain_loss_pct": 0}
 
     investments = [dict(row) for row in rows]
     symbols = list(set(inv["stock_symbol"] for inv in investments))
