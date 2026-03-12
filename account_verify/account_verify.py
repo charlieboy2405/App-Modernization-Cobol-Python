@@ -13,7 +13,7 @@ This module provides account verification functionality that checks:
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class AccountRecord:
     """Represents a stored account record.
 
