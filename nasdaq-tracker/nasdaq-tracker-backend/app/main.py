@@ -142,7 +142,7 @@ async def healthz():
 
 
 @app.get("/api/top-gainers")
-async def get_top_gainers():
+def get_top_gainers():
     """Get top 10 NASDAQ stocks by daily gains."""
     with cache_lock:
         now = datetime.now()
@@ -167,15 +167,16 @@ async def get_top_gainers():
     with cache_lock:
         top_gainers_cache["data"] = gainers
         top_gainers_cache["last_updated"] = datetime.now()
+        updated_at = top_gainers_cache["last_updated"]
 
     return {
         "gainers": gainers,
-        "last_updated": top_gainers_cache["last_updated"].isoformat() if top_gainers_cache["last_updated"] else None,
+        "last_updated": updated_at.isoformat() if updated_at else None,
     }
 
 
 @app.get("/api/investments")
-async def get_investments():
+def get_investments():
     """Get all customer investments."""
     conn = get_db()
     rows = conn.execute("SELECT * FROM investments ORDER BY created_at DESC").fetchall()
@@ -185,7 +186,7 @@ async def get_investments():
 
 
 @app.post("/api/investments")
-async def create_investment(investment: InvestmentCreate):
+def create_investment(investment: InvestmentCreate):
     """Add a new customer investment."""
     conn = get_db()
     cursor = conn.execute(
@@ -206,7 +207,7 @@ async def create_investment(investment: InvestmentCreate):
 
 
 @app.delete("/api/investments/{investment_id}")
-async def delete_investment(investment_id: int):
+def delete_investment(investment_id: int):
     """Delete a customer investment."""
     conn = get_db()
     row = conn.execute("SELECT * FROM investments WHERE id = ?", (investment_id,)).fetchone()
@@ -220,7 +221,7 @@ async def delete_investment(investment_id: int):
 
 
 @app.get("/api/investments/portfolio")
-async def get_portfolio_summary():
+def get_portfolio_summary():
     """Get portfolio summary with current stock prices."""
     conn = get_db()
     rows = conn.execute("SELECT * FROM investments ORDER BY customer_name, stock_symbol").fetchall()
@@ -275,7 +276,7 @@ async def get_portfolio_summary():
 
 
 @app.get("/api/stock/price/{symbol}")
-async def get_stock_price(symbol: str):
+def get_stock_price(symbol: str):
     """Get current price for a stock symbol."""
     try:
         ticker = yf.Ticker(symbol.upper())
