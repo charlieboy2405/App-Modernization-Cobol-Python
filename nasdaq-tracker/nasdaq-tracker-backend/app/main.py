@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional
+
 import sqlite3
 import os
 import yfinance as yf
@@ -79,13 +79,6 @@ class InvestmentCreate(BaseModel):
     purchase_price: float
     purchase_date: str
 
-
-class InvestmentUpdate(BaseModel):
-    customer_name: Optional[str] = None
-    stock_symbol: Optional[str] = None
-    quantity: Optional[float] = None
-    purchase_price: Optional[float] = None
-    purchase_date: Optional[str] = None
 
 
 def fetch_top_gainers() -> list[dict]:
@@ -165,8 +158,9 @@ def get_top_gainers():
             g["name"] = names.get(g["symbol"], g["symbol"])
 
     with cache_lock:
-        top_gainers_cache["data"] = gainers
-        top_gainers_cache["last_updated"] = datetime.now()
+        if gainers:
+            top_gainers_cache["data"] = gainers
+            top_gainers_cache["last_updated"] = datetime.now()
         updated_at = top_gainers_cache["last_updated"]
 
     return {
