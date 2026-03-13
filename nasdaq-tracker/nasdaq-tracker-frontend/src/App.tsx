@@ -90,6 +90,7 @@ function App() {
     setPortfolioLoading(true)
     try {
       const res = await fetch(`${API_URL}/api/investments/portfolio`)
+      if (!res.ok) throw new Error('Failed to fetch portfolio')
       const data = await res.json()
       setPortfolio(data)
     } catch (err) {
