@@ -161,10 +161,11 @@ def get_top_gainers():
         if gainers:
             top_gainers_cache["data"] = gainers
             top_gainers_cache["last_updated"] = datetime.now()
+        cached_gainers = top_gainers_cache["data"]
         updated_at = top_gainers_cache["last_updated"]
 
     return {
-        "gainers": gainers,
+        "gainers": gainers if gainers else cached_gainers,
         "last_updated": updated_at.isoformat() if updated_at else None,
     }
 
