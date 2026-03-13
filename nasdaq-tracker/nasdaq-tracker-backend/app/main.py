@@ -21,7 +21,7 @@ app.add_middleware(
 
 # Database setup
 DB_PATH = os.environ.get("DB_PATH", "/data/app.db")
-if not os.path.exists(os.path.dirname(DB_PATH)):
+if not os.path.exists(os.path.dirname(DB_PATH) or "."):
     DB_PATH = "app.db"
 
 
